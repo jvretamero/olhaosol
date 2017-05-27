@@ -13,9 +13,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'OPEN_WEATHER_API_KEY', OPEN_WEATHER_API_KEY
     }
 }
 

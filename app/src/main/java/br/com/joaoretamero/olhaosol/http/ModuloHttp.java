@@ -15,6 +15,7 @@ public class ModuloHttp {
     @Singleton
     OkHttpClient provideOkHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AppIdInterceptor())
                 .build();
 
         return okHttpClient;
@@ -24,7 +25,7 @@ public class ModuloHttp {
     @Singleton
     Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("")
+                .baseUrl("http://api.openweathermap.org/data/2.5/")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
