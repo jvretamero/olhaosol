@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_temperatura"
+        android:orderInCategory="100"
+        android:title="@string/farenheit"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_exibicao"
+        android:icon="@drawable/ic_mapa"
+        android:orderInCategory="200"
+        android:title="@string/exibir_mapa"
+        app:showAsAction="ifRoom" />
+</menu>

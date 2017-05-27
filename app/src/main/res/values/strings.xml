@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Olha o Sol!</string>
+    <string name="celcius">C</string>
+    <string name="farenheit">F</string>
+    <string name="exibir_lista">Exibir lista</string>
+    <string name="exibir_mapa">Exibir mapa</string>
 </resources>
