@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
 public class Coordenadas {
 
     @SerializedName("lat")
-    float latitude;
+    public float latitude;
 
     @SerializedName("lon")
-    float longitude;
+    public float longitude;
 
     @Override
     public String toString() {

@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class Temperatura {
 
     @SerializedName("temp")
-    float atual;
+    public float atual;
 
     @SerializedName("temp_min")
-    float minima;
+    public float minima;
 
     @SerializedName("temp_max")
-    float maxima;
+    public float maxima;
 
     @Override
     public String toString() {

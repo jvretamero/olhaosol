@@ -9,21 +9,24 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AppIdInterceptor implements Interceptor {
+public class OpenWeatherIterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request original = chain.request();
-        HttpUrl originalHttpUrl = original.url();
+        Request requestOriginal = chain.request();
+        HttpUrl urlOriginal = requestOriginal.url();
 
-        HttpUrl url = originalHttpUrl.newBuilder()
+        HttpUrl url = urlOriginal.newBuilder()
                 .addQueryParameter("appid", BuildConfig.OPEN_WEATHER_API_KEY)
+                .addQueryParameter("lang", "pt")
+                .addQueryParameter("cnt", "10")
                 .build();
 
-        Request.Builder requestBuilder = original.newBuilder()
-                .url(url);
+        Request request = requestOriginal
+                .newBuilder()
+                .url(url)
+                .build();
 
-        Request request = requestBuilder.build();
         return chain.proceed(request);
     }
 }

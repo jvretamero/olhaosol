@@ -8,16 +8,16 @@ import java.util.List;
 public class Cidade {
 
     @SerializedName("name")
-    String nome;
+    public String nome;
 
     @SerializedName("coord")
-    Coordenadas coordenadas;
+    public Coordenadas coordenadas;
 
     @SerializedName("main")
-    Temperatura temperatura;
+    public Temperatura temperatura;
 
     @SerializedName("weather")
-    List<Clima> climas;
+    public List<Clima> climas;
 
     @Override
     public String toString() {

@@ -9,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import br.com.joaoretamero.olhaosol.R;
-import br.com.joaoretamero.olhaosol.http.DaggerComponenteHttp;
-import br.com.joaoretamero.olhaosol.http.ModuloHttp;
 import br.com.joaoretamero.olhaosol.lista.ListaFragment;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
 import butterknife.BindDrawable;
@@ -49,16 +47,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
         presenter = new MainPresenter(this);
     }
 
-    private void configuraDependencias() {
-        DaggerComponenteHttp.builder()
-                .moduloHttp(new ModuloHttp())
-                .build()
-                .inject(this);
-    }
-
     private void configuraToolbar() {
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override

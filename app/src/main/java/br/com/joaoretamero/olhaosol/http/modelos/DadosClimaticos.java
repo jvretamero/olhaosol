@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Resposta {
+public class DadosClimaticos {
 
     @SerializedName("list")
-    List<Cidade> cidades;
+    public List<Cidade> cidades;
 
     @Override
     public String toString() {
-        return "Resposta{" +
+        return "DadosClimaticos{" +
                 "cidades=" + cidades +
                 '}';
     }
