@@ -3,6 +3,7 @@ package br.com.joaoretamero.olhaosol.http;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProvedorHttp {
@@ -19,13 +20,18 @@ public class ProvedorHttp {
                     .baseUrl("http://api.openweathermap.org/data/2.5/")
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
         }
 
         return retrofit;
     }
 
-    public static synchronized OpenWeatherApi provideOpenWeatherApi() {
+    public static synchronized OpenWeatherApi getOpenWeatherApi() {
         return getRetrofit().create(OpenWeatherApi.class);
+    }
+
+    public static ServicoHttp getServicoHttp() {
+        return new ServicoHttp(getOpenWeatherApi());
     }
 }

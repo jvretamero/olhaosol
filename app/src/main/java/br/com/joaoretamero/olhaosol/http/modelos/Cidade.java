@@ -11,7 +11,7 @@ public class Cidade {
     public String nome;
 
     @SerializedName("coord")
-    public Coordenadas coordenadas;
+    public Coordenada coordenadas;
 
     @SerializedName("main")
     public Temperatura temperatura;

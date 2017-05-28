@@ -1,5 +1,6 @@
 package br.com.joaoretamero.olhaosol.main;
 
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,9 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 import br.com.joaoretamero.olhaosol.R;
+import br.com.joaoretamero.olhaosol.http.ProvedorHttp;
 import br.com.joaoretamero.olhaosol.lista.ListaFragment;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
+import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     String stringFahrenheit;
 
     private MainPresenter presenter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         configuraToolbar();
 
-        presenter = new MainPresenter(this);
+        presenter = new MainPresenter(this, ProvedorHttp.getServicoHttp());
     }
 
     private void configuraToolbar() {
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         if (modoExibicao == ModoExibicao.LISTA)
             menuExibicao.setIcon(iconeMapa);
         else
-            menuExibicao.setIcon(iconeMapa);
+            menuExibicao.setIcon(iconeLista);
     }
 
     @Override
@@ -126,5 +132,30 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void atualizaMenu() {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void exibeCarregamento(boolean visivel) {
+        if (visivel) {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Carregando previsões");
+            }
+            progressDialog.show();
+        } else {
+            if (progressDialog != null)
+                progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void exibirPrevisoes(List<PrevisaoClimatica> previsoes) {
+        PrevisoesView fragment = (PrevisoesView) getSupportFragmentManager().findFragmentById(R.id.conteudo);
+
+        if (fragment != null) {
+            fragment.exibirPrevisoes(previsoes);
+        }
     }
 }

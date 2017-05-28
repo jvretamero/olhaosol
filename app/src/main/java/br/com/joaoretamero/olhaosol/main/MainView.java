@@ -1,7 +1,7 @@
 package br.com.joaoretamero.olhaosol.main;
 
 
-public interface MainView {
+public interface MainView extends PrevisoesView {
 
     void exibeLista();
 

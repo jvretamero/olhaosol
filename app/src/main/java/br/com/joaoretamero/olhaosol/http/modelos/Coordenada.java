@@ -3,7 +3,7 @@ package br.com.joaoretamero.olhaosol.http.modelos;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Coordenadas {
+public class Coordenada {
 
     @SerializedName("lat")
     public float latitude;
@@ -13,7 +13,7 @@ public class Coordenadas {
 
     @Override
     public String toString() {
-        return "Coordenadas{" +
+        return "Coordenada{" +
                 "latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';

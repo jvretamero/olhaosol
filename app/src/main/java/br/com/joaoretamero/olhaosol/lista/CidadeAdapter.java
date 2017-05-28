@@ -6,11 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import br.com.joaoretamero.olhaosol.R;
+import br.com.joaoretamero.olhaosol.http.ServicoHttp;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder> {
@@ -37,15 +43,47 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        PrevisaoClimatica previsao = previsoesClimaticas.get(position);
 
+        holder.cidade.setText(previsao.nomeCidade);
+        holder.temperaturaAtual.setText(String.valueOf(previsao.temperaturaAtual));
+        holder.temperaturaMinima.setText(String.valueOf(previsao.temperaturaMinima));
+        holder.temperaturaMaxima.setText(String.valueOf(previsao.temperaturaMaxima));
+        holder.descricaoClima.setText(previsao.descricaoClima);
+        holder.distancia.setText(String.valueOf(previsao.distanciaEmKm));
+
+        Glide.with(context)
+                .load(ServicoHttp.montarUrlIcone(previsao.icone))
+                .into(holder.imagem);
     }
 
     @Override
     public int getItemCount() {
-        return previsoesClimaticas == null ? 3 : previsoesClimaticas.size();
+        return previsoesClimaticas == null ? 0 : previsoesClimaticas.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.item_cidade_nome)
+        TextView cidade;
+
+        @BindView(R.id.item_cidade_temperatura_atual)
+        TextView temperaturaAtual;
+
+        @BindView(R.id.item_cidade_temperatura_minima)
+        TextView temperaturaMinima;
+
+        @BindView(R.id.item_cidade_temperatura_maxima)
+        TextView temperaturaMaxima;
+
+        @BindView(R.id.item_cidade_distancia)
+        TextView distancia;
+
+        @BindView(R.id.item_cidade_descricao_clima)
+        TextView descricaoClima;
+
+        @BindView(R.id.item_cidade_imagem)
+        ImageView imagem;
 
         public ViewHolder(View itemView) {
             super(itemView);

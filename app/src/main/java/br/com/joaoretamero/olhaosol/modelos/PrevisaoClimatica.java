@@ -10,4 +10,17 @@ public class PrevisaoClimatica {
     public float distanciaEmKm;
     public String icone;
     public String descricaoClima;
+
+    @Override
+    public String toString() {
+        return "PrevisaoClimatica{" +
+                "nomeCidade='" + nomeCidade + '\'' +
+                ", temperaturaAtual=" + temperaturaAtual +
+                ", temperaturaMinima=" + temperaturaMinima +
+                ", temperaturaMaxima=" + temperaturaMaxima +
+                ", distanciaEmKm=" + distanciaEmKm +
+                ", icone='" + icone + '\'' +
+                ", descricaoClima='" + descricaoClima + '\'' +
+                '}';
+    }
 }

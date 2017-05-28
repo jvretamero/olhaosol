@@ -40,6 +40,7 @@
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
+                android:id="@+id/item_cidade_descricao_clima"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/item_cidade_temperatura_atual"
@@ -76,6 +77,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
+                android:id="@+id/item_cidade_temperatura_minima"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
@@ -90,6 +92,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
+                android:id="@+id/item_cidade_temperatura_maxima"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="32°"
@@ -103,6 +106,7 @@
             android:layout_marginTop="8dp">
 
             <TextView
+                android:id="@+id/item_cidade_distancia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="4dp"
