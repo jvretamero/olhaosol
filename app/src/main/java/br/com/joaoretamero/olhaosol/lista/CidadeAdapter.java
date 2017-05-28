@@ -10,22 +10,22 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import br.com.joaoretamero.olhaosol.R;
-import br.com.joaoretamero.olhaosol.http.modelos.Cidade;
+import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import butterknife.ButterKnife;
 
 public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder> {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private List<Cidade> cidades;
+    private List<PrevisaoClimatica> previsoesClimaticas;
 
     public CidadeAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void setCidades(List<Cidade> cidades) {
-        this.cidades = cidades;
+    public void setPrevisoesClimaticas(List<PrevisaoClimatica> previsoesClimaticas) {
+        this.previsoesClimaticas = previsoesClimaticas;
         this.notifyDataSetChanged();
     }
 
@@ -42,7 +42,7 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return cidades == null ? 3 : cidades.size();
+        return previsoesClimaticas == null ? 3 : previsoesClimaticas.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

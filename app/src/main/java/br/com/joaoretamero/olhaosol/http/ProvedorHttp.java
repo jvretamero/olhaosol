@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class HttpServiceProvider {
+public class ProvedorHttp {
 
     private static Retrofit retrofit;
 
