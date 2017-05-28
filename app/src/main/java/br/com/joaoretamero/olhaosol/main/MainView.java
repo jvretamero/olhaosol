@@ -3,9 +3,9 @@ package br.com.joaoretamero.olhaosol.main;
 
 public interface MainView {
 
-    void exibirLista();
+    void exibeLista();
 
-    void exibirMapa();
+    void exibeMapa();
 
-    void atualizarMenu();
+    void atualizaMenu();
 }

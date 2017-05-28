@@ -13,6 +13,10 @@ public class MainPresenter {
         this.unidadeTemperatura = UnidadeTemperatura.CELSIUS;
     }
 
+    public void inicia() {
+        view.exibeLista();
+    }
+
     public ModoExibicao getModoExibicao() {
         return modoExibicao;
     }
@@ -21,20 +25,20 @@ public class MainPresenter {
         return unidadeTemperatura;
     }
 
-    public void trocarModoExibicao() {
-        view.atualizarMenu();
+    public void trocaModoExibicao() {
+        view.atualizaMenu();
 
         if (modoExibicao == ModoExibicao.LISTA) {
             modoExibicao = ModoExibicao.MAPA;
-            view.exibirMapa();
+            view.exibeMapa();
         } else {
             modoExibicao = ModoExibicao.LISTA;
-            view.exibirLista();
+            view.exibeLista();
         }
     }
 
-    public void trocarUnidadeTemperatura() {
-        view.atualizarMenu();
+    public void trocaUnidadeTemperatura() {
+        view.atualizaMenu();
 
         if (unidadeTemperatura == UnidadeTemperatura.CELSIUS) {
             unidadeTemperatura = UnidadeTemperatura.FAHRENHEIT;

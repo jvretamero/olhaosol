@@ -65,14 +65,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.inicia();
+    }
+
     private void atualizaMenuTemperatura(Menu menu) {
         UnidadeTemperatura unidadeTemperatura = presenter.getUnidadeTemperatura();
         MenuItem menuTemperatura = menu.findItem(R.id.menu_temperatura);
 
         if (unidadeTemperatura == UnidadeTemperatura.CELSIUS)
-            menuTemperatura.setTitle(stringCelcius);
-        else
             menuTemperatura.setTitle(stringFahrenheit);
+        else
+            menuTemperatura.setTitle(stringCelcius);
     }
 
     private void atualizaMenuExibicao(Menu menu) {
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         MenuItem menuExibicao = menu.findItem(R.id.menu_exibicao);
 
         if (modoExibicao == ModoExibicao.LISTA)
-            menuExibicao.setIcon(iconeLista);
+            menuExibicao.setIcon(iconeMapa);
         else
             menuExibicao.setIcon(iconeMapa);
     }
@@ -90,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
         int id = item.getItemId();
 
         if (id == R.id.menu_exibicao) {
-            presenter.trocarModoExibicao();
+            presenter.trocaModoExibicao();
             return true;
         } else if (id == R.id.menu_temperatura) {
-            presenter.trocarUnidadeTemperatura();
+            presenter.trocaUnidadeTemperatura();
             return true;
         }
 
@@ -101,12 +107,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void exibirLista() {
+    public void exibeLista() {
         exibirFragment(ListaFragment.newInstance());
     }
 
     @Override
-    public void exibirMapa() {
+    public void exibeMapa() {
         exibirFragment(MapaFragment.newInstance());
     }
 
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void atualizarMenu() {
+    public void atualizaMenu() {
         invalidateOptionsMenu();
     }
 }
