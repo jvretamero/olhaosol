@@ -8,4 +8,6 @@ public interface MainView extends PrevisoesView {
     void exibeMapa();
 
     void atualizaMenu();
+
+    void exibeCarregamento(boolean visivel);
 }

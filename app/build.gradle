@@ -21,6 +21,7 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'OPEN_WEATHER_API_KEY', OPEN_WEATHER_API_KEY
+        it.resValue 'string', 'map_api_key', MAP_API_KEY
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -45,6 +46,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.github.bumptech.glide:glide:4.0.0-RC0'
+    compile 'com.google.android.gms:play-services-maps:10.2.6'
+    compile 'com.google.android.gms:play-services-location:10.2.6'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'

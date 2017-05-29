@@ -39,7 +39,6 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
 
     public void setPrevisoesClimaticas(List<PrevisaoClimatica> previsoesClimaticas) {
         this.previsoesClimaticas = previsoesClimaticas;
-        this.notifyDataSetChanged();
     }
 
     public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {

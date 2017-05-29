@@ -22,7 +22,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements MainView, ExibicaoListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void exibirPrevisoes(List<PrevisaoClimatica> previsoes) {
+    public void exibePrevisoes(List<PrevisaoClimatica> previsoes, ConversorTemperatura conversorTemperatura) {
         PrevisoesView fragment = getFragment();
 
         if (fragment != null)
-            fragment.exibirPrevisoes(previsoes);
+            fragment.exibePrevisoes(previsoes, conversorTemperatura);
     }
 
     @Override
@@ -169,5 +169,15 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         if (fragment != null)
             fragment.setConversorTemperatura(conversorTemperatura);
+    }
+
+    @Override
+    public void onExibicaoIniciada() {
+        presenter.exibicaoPronta();
+    }
+
+    @Override
+    public void onExibicaoPausada() {
+        presenter.exibicaoPausada();
     }
 }

@@ -1,7 +1,7 @@
 package br.com.joaoretamero.olhaosol.lista;
 
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import br.com.joaoretamero.olhaosol.R;
+import br.com.joaoretamero.olhaosol.main.ExibicaoListener;
 import br.com.joaoretamero.olhaosol.main.PrevisoesView;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
@@ -20,7 +21,7 @@ import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 public class ListaFragment extends Fragment implements PrevisoesView {
 
     private CidadeAdapter adapter;
-    private ProgressDialog progressDialog;
+    private ExibicaoListener exibicaoListener;
 
     public ListaFragment() {
         // Required empty public constructor
@@ -49,24 +50,36 @@ public class ListaFragment extends Fragment implements PrevisoesView {
     }
 
     @Override
-    public void exibeCarregamento(boolean visivel) {
-        if (visivel) {
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(getContext());
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Carregando dados");
-            }
-
-            progressDialog.show();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ExibicaoListener) {
+            exibicaoListener = (ExibicaoListener) context;
         } else {
-            if (progressDialog != null)
-                progressDialog.dismiss();
+            throw new RuntimeException(context.toString()
+                    + " deve implementar ExibicaoListener");
         }
     }
 
     @Override
-    public void exibirPrevisoes(List<PrevisaoClimatica> previsoes) {
+    public void onResume() {
+        super.onResume();
+
+        if (exibicaoListener != null)
+            exibicaoListener.onExibicaoIniciada();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (exibicaoListener != null)
+            exibicaoListener.onExibicaoPausada();
+    }
+
+    @Override
+    public void exibePrevisoes(List<PrevisaoClimatica> previsoes, ConversorTemperatura conversorTemperatura) {
         adapter.setPrevisoesClimaticas(previsoes);
+        setConversorTemperatura(conversorTemperatura);
     }
 
     @Override
