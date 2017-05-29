@@ -16,6 +16,7 @@ import br.com.joaoretamero.olhaosol.http.ProvedorHttp;
 import br.com.joaoretamero.olhaosol.lista.ListaFragment;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
+import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -150,12 +151,23 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }
     }
 
+    private PrevisoesView getFragment() {
+        return (PrevisoesView) getSupportFragmentManager().findFragmentById(R.id.conteudo);
+    }
+
     @Override
     public void exibirPrevisoes(List<PrevisaoClimatica> previsoes) {
-        PrevisoesView fragment = (PrevisoesView) getSupportFragmentManager().findFragmentById(R.id.conteudo);
+        PrevisoesView fragment = getFragment();
 
-        if (fragment != null) {
+        if (fragment != null)
             fragment.exibirPrevisoes(previsoes);
-        }
+    }
+
+    @Override
+    public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {
+        PrevisoesView fragment = getFragment();
+
+        if (fragment != null)
+            fragment.setConversorTemperatura(conversorTemperatura);
     }
 }

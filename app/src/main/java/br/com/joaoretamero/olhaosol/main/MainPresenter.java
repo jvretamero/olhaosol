@@ -2,6 +2,8 @@ package br.com.joaoretamero.olhaosol.main;
 
 
 import br.com.joaoretamero.olhaosol.http.ServicoHttp;
+import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
+import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaFahrenheit;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -58,12 +60,14 @@ public class MainPresenter {
     }
 
     public void trocaUnidadeTemperatura() {
-        view.atualizaMenu();
-
         if (unidadeTemperatura == UnidadeTemperatura.CELSIUS) {
             unidadeTemperatura = UnidadeTemperatura.FAHRENHEIT;
+            view.setConversorTemperatura(new KelvinParaFahrenheit());
         } else {
             unidadeTemperatura = UnidadeTemperatura.CELSIUS;
+            view.setConversorTemperatura(new KelvinParaCelcius());
         }
+
+        view.atualizaMenu();
     }
 }

@@ -17,6 +17,8 @@ import br.com.joaoretamero.olhaosol.R;
 import br.com.joaoretamero.olhaosol.http.ServicoHttp;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.NumeroUtil;
+import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
+import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -26,15 +28,22 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
     private LayoutInflater layoutInflater;
     private List<PrevisaoClimatica> previsoesClimaticas;
     private String formatoTemperatura;
+    private ConversorTemperatura conversorTemperatura;
 
     public CidadeAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
         this.formatoTemperatura = context.getResources().getString(R.string.formato_temperatura);
+        this.conversorTemperatura = new KelvinParaCelcius();
     }
 
     public void setPrevisoesClimaticas(List<PrevisaoClimatica> previsoesClimaticas) {
         this.previsoesClimaticas = previsoesClimaticas;
+        this.notifyDataSetChanged();
+    }
+
+    public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {
+        this.conversorTemperatura = conversorTemperatura;
         this.notifyDataSetChanged();
     }
 
@@ -61,7 +70,8 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
     }
 
     private String formatarTemperatura(float temperatura) {
-        return String.format(formatoTemperatura, NumeroUtil.formatar(temperatura, 1));
+        float temperaturaConvertida = conversorTemperatura.converter(temperatura);
+        return String.format(formatoTemperatura, NumeroUtil.formatar(temperaturaConvertida, 1));
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.util.List;
 import br.com.joaoretamero.olhaosol.R;
 import br.com.joaoretamero.olhaosol.main.PrevisoesView;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
+import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 
 public class ListaFragment extends Fragment implements PrevisoesView {
 
@@ -66,5 +67,10 @@ public class ListaFragment extends Fragment implements PrevisoesView {
     @Override
     public void exibirPrevisoes(List<PrevisaoClimatica> previsoes) {
         adapter.setPrevisoesClimaticas(previsoes);
+    }
+
+    @Override
+    public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {
+        adapter.setConversorTemperatura(conversorTemperatura);
     }
 }
