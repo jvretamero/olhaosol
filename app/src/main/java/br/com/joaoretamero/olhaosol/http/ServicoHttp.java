@@ -31,7 +31,11 @@ public class ServicoHttp {
                 .flatMap(dadosClimaticos -> Observable.from(dadosClimaticos.cidades)
                         .map(cidade -> cidadeEmPrevisao(cidade, coordenadaUsuario))
                         .filter(this::distanciaAte50Km)
-                        .toList());
+                        .toSortedList(this::porDistancia));
+    }
+
+    private Integer porDistancia(PrevisaoClimatica previsaoClimatica, PrevisaoClimatica previsaoClimatica2) {
+        return Float.compare(previsaoClimatica.distanciaEmKm, previsaoClimatica2.distanciaEmKm);
     }
 
     private PrevisaoClimatica cidadeEmPrevisao(Cidade cidade, Coordenada coordenadaUsuario) {

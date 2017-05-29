@@ -16,6 +16,7 @@ import java.util.List;
 import br.com.joaoretamero.olhaosol.R;
 import br.com.joaoretamero.olhaosol.http.ServicoHttp;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
+import br.com.joaoretamero.olhaosol.util.NumeroUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -24,10 +25,12 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
     private Context context;
     private LayoutInflater layoutInflater;
     private List<PrevisaoClimatica> previsoesClimaticas;
+    private String formatoTemperatura;
 
     public CidadeAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
+        this.formatoTemperatura = context.getResources().getString(R.string.formato_temperatura);
     }
 
     public void setPrevisoesClimaticas(List<PrevisaoClimatica> previsoesClimaticas) {
@@ -46,15 +49,19 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
         PrevisaoClimatica previsao = previsoesClimaticas.get(position);
 
         holder.cidade.setText(previsao.nomeCidade);
-        holder.temperaturaAtual.setText(String.valueOf(previsao.temperaturaAtual));
-        holder.temperaturaMinima.setText(String.valueOf(previsao.temperaturaMinima));
-        holder.temperaturaMaxima.setText(String.valueOf(previsao.temperaturaMaxima));
+        holder.temperaturaAtual.setText(formatarTemperatura(previsao.temperaturaAtual));
+        holder.temperaturaMinima.setText(formatarTemperatura(previsao.temperaturaMinima));
+        holder.temperaturaMaxima.setText(formatarTemperatura(previsao.temperaturaMaxima));
         holder.descricaoClima.setText(previsao.descricaoClima);
-        holder.distancia.setText(String.valueOf(previsao.distanciaEmKm));
+        holder.distancia.setText(NumeroUtil.formatar(previsao.distanciaEmKm, 1));
 
         Glide.with(context)
                 .load(ServicoHttp.montarUrlIcone(previsao.icone))
                 .into(holder.imagem);
+    }
+
+    private String formatarTemperatura(float temperatura) {
+        return String.format(formatoTemperatura, NumeroUtil.formatar(temperatura, 1));
     }
 
     @Override

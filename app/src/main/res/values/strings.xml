@@ -4,4 +4,5 @@
     <string name="fahrenheit">°F</string>
     <string name="exibir_lista">Exibir lista</string>
     <string name="exibir_mapa">Exibir mapa</string>
+    <string name="formato_temperatura">%s°</string>
 </resources>
