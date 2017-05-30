@@ -10,16 +10,12 @@ import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.CoordenadaUtil;
 import rx.Observable;
 
-public class ServicoHttp {
+public class ServicoClimatico {
 
     private OpenWeatherApi api;
 
-    public ServicoHttp(OpenWeatherApi api) {
+    public ServicoClimatico(OpenWeatherApi api) {
         this.api = api;
-    }
-
-    public static String montarUrlIcone(String icone) {
-        return String.format("http://openweathermap.org/img/w/%s.png", icone);
     }
 
     public Observable<List<PrevisaoClimatica>> getPrevisoesClimaticas(float latitude, float longitude) {
@@ -50,6 +46,8 @@ public class ServicoHttp {
         previsaoClimatica.icone = clima.icone;
         previsaoClimatica.descricaoClima = clima.descricao;
         previsaoClimatica.distanciaEmKm = CoordenadaUtil.distanciaKm(coordenadaUsuario, coordenadaCidade);
+        previsaoClimatica.latitude = coordenadaCidade.latitude;
+        previsaoClimatica.longitude = coordenadaCidade.longitude;
 
         return previsaoClimatica;
     }

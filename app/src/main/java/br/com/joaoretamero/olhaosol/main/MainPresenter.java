@@ -1,7 +1,7 @@
 package br.com.joaoretamero.olhaosol.main;
 
 
-import br.com.joaoretamero.olhaosol.http.ServicoHttp;
+import br.com.joaoretamero.olhaosol.http.ServicoClimatico;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaFahrenheit;
@@ -15,10 +15,10 @@ public class MainPresenter {
     private MainView view;
     private ModoExibicao modoExibicao;
     private UnidadeTemperatura unidadeTemperatura;
-    private ServicoHttp servicoHttp;
+    private ServicoClimatico servicoHttp;
     private CompositeSubscription subscriptions;
 
-    public MainPresenter(MainView view, ServicoHttp servicoHttp) {
+    public MainPresenter(MainView view, ServicoClimatico servicoHttp) {
         this.view = view;
         this.servicoHttp = servicoHttp;
         this.modoExibicao = ModoExibicao.LISTA;
@@ -70,8 +70,6 @@ public class MainPresenter {
             modoExibicao = ModoExibicao.LISTA;
             view.exibeLista();
         }
-
-        carregaPrevisoes();
     }
 
     private ConversorTemperatura getConversorTemperatura() {

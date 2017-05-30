@@ -10,6 +10,8 @@ public class PrevisaoClimatica {
     public float distanciaEmKm;
     public String icone;
     public String descricaoClima;
+    public float latitude;
+    public float longitude;
 
     @Override
     public String toString() {
@@ -21,6 +23,8 @@ public class PrevisaoClimatica {
                 ", distanciaEmKm=" + distanciaEmKm +
                 ", icone='" + icone + '\'' +
                 ", descricaoClima='" + descricaoClima + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
     }
 }

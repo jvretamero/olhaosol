@@ -20,7 +20,7 @@ import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 
 public class ListaFragment extends Fragment implements PrevisoesView {
 
-    private CidadeAdapter adapter;
+    private PrevisoesAdapter adapter;
     private ExibicaoListener exibicaoListener;
 
     public ListaFragment() {
@@ -40,7 +40,7 @@ public class ListaFragment extends Fragment implements PrevisoesView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        adapter = new CidadeAdapter(getContext());
+        adapter = new PrevisoesAdapter(getContext());
 
         RecyclerView lista = (RecyclerView) inflater.inflate(R.layout.fragment_lista, container, false);
         lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

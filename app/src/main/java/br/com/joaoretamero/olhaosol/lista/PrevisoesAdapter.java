@@ -14,15 +14,16 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import br.com.joaoretamero.olhaosol.R;
-import br.com.joaoretamero.olhaosol.http.ServicoHttp;
+import br.com.joaoretamero.olhaosol.http.ProvedorHttp;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.NumeroUtil;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
+import br.com.joaoretamero.olhaosol.util.temperatura.TemperaturaUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder> {
+public class PrevisoesAdapter extends RecyclerView.Adapter<PrevisoesAdapter.ViewHolder> {
 
     private Context context;
     private LayoutInflater layoutInflater;
@@ -30,7 +31,7 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
     private String formatoTemperatura;
     private ConversorTemperatura conversorTemperatura;
 
-    public CidadeAdapter(Context context) {
+    public PrevisoesAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
         this.formatoTemperatura = context.getResources().getString(R.string.formato_temperatura);
@@ -64,13 +65,13 @@ public class CidadeAdapter extends RecyclerView.Adapter<CidadeAdapter.ViewHolder
         holder.distancia.setText(NumeroUtil.formatar(previsao.distanciaEmKm, 1));
 
         Glide.with(context)
-                .load(ServicoHttp.montarUrlIcone(previsao.icone))
+                .load(ProvedorHttp.montarUrlIcone(previsao.icone))
                 .into(holder.imagem);
     }
 
     private String formatarTemperatura(float temperatura) {
         float temperaturaConvertida = conversorTemperatura.converter(temperatura);
-        return String.format(formatoTemperatura, NumeroUtil.formatar(temperaturaConvertida, 1));
+        return TemperaturaUtil.formatar(temperaturaConvertida, formatoTemperatura);
     }
 
     @Override

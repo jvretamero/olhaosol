@@ -31,7 +31,11 @@ public class ProvedorHttp {
         return getRetrofit().create(OpenWeatherApi.class);
     }
 
-    public static ServicoHttp getServicoHttp() {
-        return new ServicoHttp(getOpenWeatherApi());
+    public static ServicoClimatico getServicoHttp() {
+        return new ServicoClimatico(getOpenWeatherApi());
+    }
+
+    public static String montarUrlIcone(String icone) {
+        return String.format("http://openweathermap.org/img/w/%s.png", icone);
     }
 }

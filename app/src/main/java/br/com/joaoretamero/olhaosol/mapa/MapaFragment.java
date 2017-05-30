@@ -1,31 +1,39 @@
 package br.com.joaoretamero.olhaosol.mapa;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import br.com.joaoretamero.olhaosol.R;
+import br.com.joaoretamero.olhaosol.main.ExibicaoListener;
 import br.com.joaoretamero.olhaosol.main.PrevisoesView;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
-import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
 
 public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyCallback {
 
     private ConversorTemperatura conversorTemperatura;
+    private PrevisoesMapaAdapter adapter;
     private List<PrevisaoClimatica> previsoes;
     private GoogleMap googleMap;
     private MapView mapView;
+    private ExibicaoListener exibicaoListener;
+    private String formatoTemperatura;
 
     public MapaFragment() {
         // Required empty public constructor
@@ -39,7 +47,7 @@ public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        conversorTemperatura = new KelvinParaCelcius();
+        formatoTemperatura = getResources().getString(R.string.formato_temperatura);
     }
 
     @Override
@@ -64,12 +72,18 @@ public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyC
     public void onResume() {
         super.onResume();
         mapView.onResume();
+
+        if (googleMap != null && exibicaoListener != null)
+            exibicaoListener.onExibicaoIniciada();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+
+        if (exibicaoListener != null)
+            exibicaoListener.onExibicaoPausada();
     }
 
     @Override
@@ -91,31 +105,61 @@ public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyC
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ExibicaoListener) {
+            exibicaoListener = (ExibicaoListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " deve implementar ExibicaoListener");
+        }
+    }
+
+    @Override
     public void exibePrevisoes(List<PrevisaoClimatica> previsoes, ConversorTemperatura conversorTemperatura) {
         this.previsoes = previsoes;
-        inserePrevisoesNoMapa();
+        setConversorTemperatura(conversorTemperatura);
     }
 
     @Override
     public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {
-        this.conversorTemperatura = conversorTemperatura;
+        adapter.setConversorTemperatura(conversorTemperatura);
         inserePrevisoesNoMapa();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.adapter = new PrevisoesMapaAdapter(getContext(), formatoTemperatura);
+
         this.googleMap = googleMap;
-        inserePrevisoesNoMapa();
+        this.googleMap.setInfoWindowAdapter(adapter);
+
+        if (exibicaoListener != null)
+            exibicaoListener.onExibicaoIniciada();
     }
 
     private void inserePrevisoesNoMapa() {
         if (previsoes != null && googleMap != null) {
+            adapter.limpar();
             googleMap.clear();
-            for (PrevisaoClimatica previsao : previsoes) {
-                MarkerOptions markerOptions = new MarkerOptions();
 
-                googleMap.addMarker(new MarkerOptions());
+            LatLngBounds.Builder limites = new LatLngBounds.Builder();
+
+            for (PrevisaoClimatica previsao : previsoes) {
+                LatLng coordenada = new LatLng(previsao.latitude, previsao.longitude);
+
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(coordenada);
+                markerOptions.title(previsao.nomeCidade);
+                markerOptions.snippet(previsao.descricaoClima);
+
+                Marker marcador = googleMap.addMarker(markerOptions);
+                marcador.setTag(previsao);
+
+                limites.include(coordenada);
             }
+
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(limites.build(), 128));
         }
     }
 }
