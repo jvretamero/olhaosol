@@ -27,13 +27,14 @@ import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 
 public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyCallback {
 
-    private ConversorTemperatura conversorTemperatura;
     private PrevisoesMapaAdapter adapter;
     private List<PrevisaoClimatica> previsoes;
     private GoogleMap googleMap;
     private MapView mapView;
     private ExibicaoListener exibicaoListener;
+    private NovaPosicaoListener novaPosicaoListener;
     private String formatoTemperatura;
+    private boolean usuarioMovendoCamera = false;
 
     public MapaFragment() {
         // Required empty public constructor
@@ -107,12 +108,18 @@ public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyC
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ExibicaoListener) {
+
+        if (context instanceof ExibicaoListener)
             exibicaoListener = (ExibicaoListener) context;
-        } else {
+        else
             throw new RuntimeException(context.toString()
                     + " deve implementar ExibicaoListener");
-        }
+
+        if (context instanceof NovaPosicaoListener)
+            novaPosicaoListener = (NovaPosicaoListener) context;
+        else
+            throw new RuntimeException(context.toString()
+                    + " deve implementar NovaPosicaoListener");
     }
 
     @Override
@@ -133,6 +140,18 @@ public class MapaFragment extends Fragment implements PrevisoesView, OnMapReadyC
 
         this.googleMap = googleMap;
         this.googleMap.setInfoWindowAdapter(adapter);
+        this.googleMap.setOnCameraMoveStartedListener(i -> {
+            if (i == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE)
+                usuarioMovendoCamera = true;
+        });
+        this.googleMap.setOnCameraIdleListener(() -> {
+            if (usuarioMovendoCamera) {
+                usuarioMovendoCamera = false;
+                LatLng posicao = googleMap.getCameraPosition().target;
+                if (novaPosicaoListener != null)
+                    novaPosicaoListener.onNovaPosicao((float) posicao.latitude, (float) posicao.longitude);
+            }
+        });
 
         if (exibicaoListener != null)
             exibicaoListener.onExibicaoIniciada();

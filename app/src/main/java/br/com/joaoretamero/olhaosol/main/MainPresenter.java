@@ -30,19 +30,15 @@ public class MainPresenter {
         view.exibeLista();
     }
 
-    public void exibicaoPronta() {
-        carregaPrevisoes();
-    }
-
     public void exibicaoPausada() {
         subscriptions.clear();
     }
 
-    private void carregaPrevisoes() {
+    public void carregaPrevisoes(float latitude, float longitude) {
         view.exibeCarregamento(true);
 
         Subscription subscription = servicoHttp
-                .getPrevisoesClimaticas(50.34f, 34.0f)
+                .getPrevisoesClimaticas(latitude, longitude)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(previsoes -> view.exibePrevisoes(previsoes, getConversorTemperatura()),

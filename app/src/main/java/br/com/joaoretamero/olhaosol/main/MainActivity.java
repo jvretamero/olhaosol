@@ -15,6 +15,7 @@ import br.com.joaoretamero.olhaosol.R;
 import br.com.joaoretamero.olhaosol.http.ProvedorHttp;
 import br.com.joaoretamero.olhaosol.lista.ListaFragment;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
+import br.com.joaoretamero.olhaosol.mapa.NovaPosicaoListener;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import butterknife.BindDrawable;
@@ -22,7 +23,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainView, ExibicaoListener {
+public class MainActivity extends AppCompatActivity implements MainView, ExibicaoListener, NovaPosicaoListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -173,11 +174,16 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
 
     @Override
     public void onExibicaoIniciada() {
-        presenter.exibicaoPronta();
+        presenter.carregaPrevisoes(50.34f, 34.0f);
     }
 
     @Override
     public void onExibicaoPausada() {
         presenter.exibicaoPausada();
+    }
+
+    @Override
+    public void onNovaPosicao(float latitude, float longitude) {
+        presenter.carregaPrevisoes(latitude, longitude);
     }
 }
