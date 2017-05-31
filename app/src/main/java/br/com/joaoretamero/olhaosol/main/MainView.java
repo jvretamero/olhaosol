@@ -10,4 +10,16 @@ public interface MainView extends PrevisoesView {
     void atualizaMenu();
 
     void exibeCarregamento(boolean visivel);
+
+    void requisitarLocalizacao();
+
+    void exibeObtendoLocalizacao(boolean visivel);
+
+    void explicarMotivoPermissao();
+
+    void requisitarPermissao();
+
+    void exibirMensagemSemPermissao();
+
+    void exibieMensagemSemLocalizacao();
 }

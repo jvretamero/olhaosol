@@ -17,6 +17,8 @@ public class MainPresenter {
     private UnidadeTemperatura unidadeTemperatura;
     private ServicoClimatico servicoHttp;
     private CompositeSubscription subscriptions;
+    private float latitude;
+    private float longitude;
 
     public MainPresenter(MainView view, ServicoClimatico servicoHttp) {
         this.view = view;
@@ -24,10 +26,6 @@ public class MainPresenter {
         this.modoExibicao = ModoExibicao.LISTA;
         this.unidadeTemperatura = UnidadeTemperatura.CELSIUS;
         this.subscriptions = new CompositeSubscription();
-    }
-
-    public void inicia() {
-        view.exibeLista();
     }
 
     public void exibicaoPausada() {
@@ -88,5 +86,43 @@ public class MainPresenter {
 
         setConversorTemperatura();
         view.atualizaMenu();
+    }
+
+    public void permissaoLocalizacaoConcedida() {
+        view.exibeObtendoLocalizacao(true);
+        view.requisitarLocalizacao();
+    }
+
+    public void exibicaoIniciada() {
+        carregaPrevisoes(latitude, longitude);
+    }
+
+    public void localizacaoObtida(float latitude, float longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        view.exibeObtendoLocalizacao(false);
+        view.exibeLista();
+    }
+
+    public void mapaMovimentado(float latitude, float longitude) {
+        carregaPrevisoes(latitude, longitude);
+    }
+
+    public void semPermissaoLocalizacao() {
+        view.requisitarPermissao();
+    }
+
+    public void deveExplicarPermissaoLocalizacao() {
+        view.explicarMotivoPermissao();
+    }
+
+    public void permissaoLocalizacaoNegada() {
+        view.exibirMensagemSemPermissao();
+    }
+
+    public void semLocalizacao() {
+        view.exibeObtendoLocalizacao(false);
+        view.exibieMensagemSemLocalizacao();
     }
 }

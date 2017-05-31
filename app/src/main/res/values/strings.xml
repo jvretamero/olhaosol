@@ -5,7 +5,12 @@
     <string name="exibir_lista">Exibir lista</string>
     <string name="exibir_mapa">Exibir mapa</string>
     <string name="formato_temperatura">%s°</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sem_localizacao">Não foi possível obter sua localização, portanto o aplicativo não funcionará corretamente.</string>
+    <string name="problema_play_services">Não foi possível conectar ao Google Play Services, portanto o aplicativo não funcionará corretamente.</string>
+    <string name="sem_permissao">O aplicativo não tem permissão para obter sua localização, portanto o aplicativo não funcionará corretamente.</string>
+    <string name="explicacao_localizacao">O aplicativo precisa usar sua localização para buscar as previsões climáticas perto de você.</string>
+    <string name="fechar_app">Fechar app</string>
+    <string name="permitir">Permitir</string>
+    <string name="carregando_previsoes">Carregando previsões</string>
+    <string name="obtendo_localizacao">Obtendo localização</string>
 </resources>

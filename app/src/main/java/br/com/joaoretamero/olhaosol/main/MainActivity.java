@@ -1,13 +1,28 @@
 package br.com.joaoretamero.olhaosol.main;
 
+import android.Manifest;
 import android.app.ProgressDialog;
-import android.graphics.drawable.Drawable;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
@@ -18,21 +33,22 @@ import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
 import br.com.joaoretamero.olhaosol.mapa.NovaPosicaoListener;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
-import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainView, ExibicaoListener, NovaPosicaoListener {
+import static com.google.android.gms.location.LocationServices.FusedLocationApi;
+
+public class MainActivity extends AppCompatActivity implements MainView,
+        ExibicaoListener, NovaPosicaoListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private static final int REQUEST_ERRO_PLAY_SERVICES = 1;
+    private static final int REQUEST_PERMISSAO_LOCALIZACAO = 2;
+    private static final String permissaoLocalizacao = Manifest.permission.ACCESS_FINE_LOCATION;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindDrawable(R.drawable.ic_lista)
-    Drawable iconeLista;
-
-    @BindDrawable(R.drawable.ic_mapa)
-    Drawable iconeMapa;
 
     @BindString(R.string.celcius)
     String stringCelcius;
@@ -40,8 +56,16 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
     @BindString(R.string.fahrenheit)
     String stringFahrenheit;
 
+    @BindString(R.string.carregando_previsoes)
+    String stringCarregandoPrevisoes;
+
+    @BindString(R.string.obtendo_localizacao)
+    String stringObtendoLocalizacao;
+
     private MainPresenter presenter;
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialogPrevisoes;
+    private ProgressDialog progressDialogLocalizacao;
+    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +75,21 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
         ButterKnife.bind(this);
 
         configuraToolbar();
+        configurarGoogleApiClient();
 
         presenter = new MainPresenter(this, ProvedorHttp.getServicoHttp());
     }
 
     private void configuraToolbar() {
         setSupportActionBar(toolbar);
+    }
+
+    private void configurarGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     @Override
@@ -76,7 +109,16 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.inicia();
+
+        googleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (googleApiClient.isConnected())
+            googleApiClient.disconnect();
     }
 
     private void atualizaMenuTemperatura(Menu menu) {
@@ -94,9 +136,9 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
         MenuItem menuExibicao = menu.findItem(R.id.menu_exibicao);
 
         if (modoExibicao == ModoExibicao.LISTA)
-            menuExibicao.setIcon(iconeMapa);
+            menuExibicao.setIcon(R.drawable.ic_mapa);
         else
-            menuExibicao.setIcon(iconeLista);
+            menuExibicao.setIcon(R.drawable.ic_lista);
     }
 
     @Override
@@ -139,16 +181,16 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
     @Override
     public void exibeCarregamento(boolean visivel) {
         if (visivel) {
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage("Carregando previsões");
+            if (progressDialogPrevisoes == null) {
+                progressDialogPrevisoes = new ProgressDialog(this);
+                progressDialogPrevisoes.setIndeterminate(true);
+                progressDialogPrevisoes.setCancelable(false);
+                progressDialogPrevisoes.setMessage(stringCarregandoPrevisoes);
             }
-            progressDialog.show();
+            progressDialogPrevisoes.show();
         } else {
-            if (progressDialog != null)
-                progressDialog.dismiss();
+            if (progressDialogPrevisoes != null)
+                progressDialogPrevisoes.dismiss();
         }
     }
 
@@ -174,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
 
     @Override
     public void onExibicaoIniciada() {
-        presenter.carregaPrevisoes(50.34f, 34.0f);
+        presenter.exibicaoIniciada();
     }
 
     @Override
@@ -184,6 +226,139 @@ public class MainActivity extends AppCompatActivity implements MainView, Exibica
 
     @Override
     public void onNovaPosicao(float latitude, float longitude) {
-        presenter.carregaPrevisoes(latitude, longitude);
+        presenter.mapaMovimentado(latitude, longitude);
     }
+
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSAO_LOCALIZACAO) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                presenter.permissaoLocalizacaoConcedida();
+            else
+                presenter.permissaoLocalizacaoNegada();
+        }
+    }
+
+    @Override
+    public void exibirMensagemSemPermissao() {
+        exibeMensagem(R.string.sem_permissao);
+    }
+
+    @Override
+    @SuppressWarnings("MissingPermission")
+    public void onConnected(@Nullable Bundle bundle) {
+        if (isPermissaoLocalizacaoConcedida(permissaoLocalizacao))
+            presenter.permissaoLocalizacaoConcedida();
+        else if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissaoLocalizacao)) {
+            presenter.deveExplicarPermissaoLocalizacao();
+        } else
+            presenter.semPermissaoLocalizacao();
+    }
+
+    private boolean isPermissaoLocalizacaoConcedida(String permissao) {
+        return ActivityCompat.checkSelfPermission(this, permissao)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void explicarMotivoPermissao() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.explicacao_localizacao)
+                .setPositiveButton(R.string.permitir, (dialog, which) -> {
+                    dialog.dismiss();
+                    presenter.semPermissaoLocalizacao();
+                })
+                .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
+                    dialog.cancel();
+                    finish();
+                })
+                .show();
+    }
+
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public void requisitarLocalizacao() {
+        LocationAvailability locationAvailability = LocationServices.FusedLocationApi
+                .getLocationAvailability(googleApiClient);
+
+        if (locationAvailability.isLocationAvailable()) {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setInterval(1000);
+            locationRequest.setFastestInterval(5000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        } else {
+            presenter.semLocalizacao();
+        }
+    }
+
+    @Override
+    public void exibeObtendoLocalizacao(boolean visivel) {
+        if (visivel) {
+            if (progressDialogLocalizacao == null) {
+                progressDialogLocalizacao = new ProgressDialog(this);
+                progressDialogLocalizacao.setIndeterminate(true);
+                progressDialogLocalizacao.setCancelable(false);
+                progressDialogLocalizacao.setMessage(stringObtendoLocalizacao);
+            }
+            progressDialogLocalizacao.show();
+        } else {
+            if (progressDialogLocalizacao != null)
+                progressDialogLocalizacao.dismiss();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+
+        if (location == null) {
+            presenter.semLocalizacao();
+        } else {
+            presenter.localizacaoObtida((float) location.getLatitude(), (float) location.getLongitude());
+        }
+    }
+
+    @Override
+    public void exibieMensagemSemLocalizacao() {
+        exibeMensagem(R.string.sem_localizacao);
+    }
+
+    private void exibeMensagem(@StringRes int idMensagem) {
+        new AlertDialog.Builder(this)
+                .setMessage(idMensagem)
+                .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
+                    dialog.cancel();
+                    finish();
+                })
+                .show();
+    }
+
+    @Override
+    public void requisitarPermissao() {
+        String[] permissoes = new String[]{permissaoLocalizacao};
+        ActivityCompat.requestPermissions(this, permissoes, REQUEST_PERMISSAO_LOCALIZACAO);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, REQUEST_ERRO_PLAY_SERVICES);
+            } catch (IntentSender.SendIntentException e) {
+                googleApiClient.connect();
+            }
+        } else {
+            exibeMensagem(R.string.problema_play_services);
+        }
+    }
+
+
 }
