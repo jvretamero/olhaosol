@@ -32,6 +32,7 @@ import br.com.joaoretamero.olhaosol.lista.ListaFragment;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
 import br.com.joaoretamero.olhaosol.mapa.NovaPosicaoListener;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
+import br.com.joaoretamero.olhaosol.util.schedulers.ProvedorSchedulerPadrao;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         configuraToolbar();
         configurarGoogleApiClient();
 
-        presenter = new MainPresenter(this, ProvedorHttp.getServicoHttp());
+        presenter = new MainPresenter(this, new ProvedorSchedulerPadrao(), ProvedorHttp.getServicoHttp());
     }
 
     private void configuraToolbar() {

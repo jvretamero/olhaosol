@@ -31,8 +31,8 @@ public class ProvedorHttp {
         return getRetrofit().create(OpenWeatherApi.class);
     }
 
-    public static ServicoClimatico getServicoHttp() {
-        return new ServicoClimatico(getOpenWeatherApi());
+    public static ServicoClimaticoImpl getServicoHttp() {
+        return new ServicoClimaticoImpl(getOpenWeatherApi());
     }
 
     public static String montarUrlIcone(String icone) {

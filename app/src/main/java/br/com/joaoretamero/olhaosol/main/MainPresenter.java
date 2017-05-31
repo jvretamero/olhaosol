@@ -2,6 +2,7 @@ package br.com.joaoretamero.olhaosol.main;
 
 
 import br.com.joaoretamero.olhaosol.http.ServicoClimatico;
+import br.com.joaoretamero.olhaosol.util.schedulers.ProvedorScheduler;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaFahrenheit;
@@ -17,11 +18,13 @@ public class MainPresenter {
     private UnidadeTemperatura unidadeTemperatura;
     private ServicoClimatico servicoHttp;
     private CompositeSubscription subscriptions;
+    private ProvedorScheduler provedorScheduler;
     private float latitude;
     private float longitude;
 
-    public MainPresenter(MainView view, ServicoClimatico servicoHttp) {
+    public MainPresenter(MainView view, ProvedorScheduler provedorScheduler, ServicoClimatico servicoHttp) {
         this.view = view;
+        this.provedorScheduler = provedorScheduler;
         this.servicoHttp = servicoHttp;
         this.modoExibicao = ModoExibicao.LISTA;
         this.unidadeTemperatura = UnidadeTemperatura.CELSIUS;
@@ -37,8 +40,8 @@ public class MainPresenter {
 
         Subscription subscription = servicoHttp
                 .getPrevisoesClimaticas(latitude, longitude)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(provedorScheduler.io())
+                .observeOn(provedorScheduler.ui())
                 .subscribe(previsoes -> view.exibePrevisoes(previsoes, getConversorTemperatura()),
                         erro -> view.exibeCarregamento(false),
                         () -> view.exibeCarregamento(false));
