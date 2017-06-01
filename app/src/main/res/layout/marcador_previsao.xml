@@ -4,12 +4,13 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="@dimen/margem_interna_cartao">
 
     <TextView
         android:id="@+id/marcador_previsao_cidade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/espaco_elementos"
         android:text="cidade"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -20,9 +21,9 @@
 
         <ImageView
             android:id="@+id/marcador_previsao_imagem"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginRight="8dp"
+            android:layout_width="@dimen/imagem_tamanho"
+            android:layout_height="@dimen/imagem_tamanho"
+            android:layout_marginRight="@dimen/espaco_elementos"
             android:src="@mipmap/ic_launcher" />
 
         <TextView

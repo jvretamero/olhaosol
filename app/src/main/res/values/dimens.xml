@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margem_vertical_cartao">8dp</dimen>
+    <dimen name="margem_horizontal_cartao">16dp</dimen>
+    <dimen name="elevacao_cartao">2dp</dimen>
+    <dimen name="borda_cartao">2dp</dimen>
+    <dimen name="margem_interna_cartao">16dp</dimen>
+    <dimen name="imagem_tamanho">48dp</dimen>
+    <dimen name="espaco_elementos">8dp</dimen>
+    <dimen name="espaco_duplo_elementos">16dp</dimen>
+    <dimen name="espaco_metade_elementos">4dp</dimen>
+</resources>

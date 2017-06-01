@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginTop="8dp"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="@dimen/margem_vertical_cartao"
+    android:layout_marginLeft="@dimen/margem_horizontal_cartao"
+    android:layout_marginRight="@dimen/margem_horizontal_cartao"
+    android:layout_marginTop="@dimen/margem_vertical_cartao"
+    app:cardCornerRadius="@dimen/borda_cartao"
+    app:cardElevation="@dimen/elevacao_cartao">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/margem_interna_cartao">
 
         <TextView
             android:id="@+id/item_cidade_nome"
@@ -27,16 +27,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="@dimen/espaco_elementos">
 
             <ImageView
                 android:id="@+id/item_cidade_imagem"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/imagem_tamanho"
+                android:layout_height="@dimen/imagem_tamanho"
                 android:layout_alignBottom="@+id/item_cidade_temperatura_atual"
                 android:layout_alignParentLeft="true"
                 android:layout_alignTop="@+id/item_cidade_temperatura_atual"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="@dimen/espaco_elementos"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="8dp"
+                android:layout_marginLeft="@dimen/espaco_elementos"
                 android:text="27°"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
         </RelativeLayout>
@@ -66,13 +66,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_cidade_imagem"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/espaco_elementos"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="@dimen/espaco_elementos"
                 android:text="Mínima:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -80,14 +80,14 @@
                 android:id="@+id/item_cidade_temperatura_minima"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="@dimen/espaco_duplo_elementos"
                 android:text="18°"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="@dimen/espaco_elementos"
                 android:text="Máxima:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -103,13 +103,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="@dimen/espaco_elementos">
 
             <TextView
                 android:id="@+id/item_cidade_distancia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="@dimen/espaco_metade_elementos"
                 android:text="2,3"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
