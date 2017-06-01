@@ -1,14 +1,14 @@
 package br.com.joaoretamero.olhaosol.main;
 
 
+import android.support.annotation.VisibleForTesting;
+
 import br.com.joaoretamero.olhaosol.http.ServicoClimatico;
 import br.com.joaoretamero.olhaosol.util.schedulers.ProvedorScheduler;
 import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaCelcius;
 import br.com.joaoretamero.olhaosol.util.temperatura.KelvinParaFahrenheit;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainPresenter {
@@ -98,6 +98,12 @@ public class MainPresenter {
 
     public void exibicaoIniciada() {
         carregaPrevisoes(latitude, longitude);
+    }
+
+    @VisibleForTesting
+    public void setLocalizacao(float latitude, float longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void localizacaoObtida(float latitude, float longitude) {
