@@ -1,5 +1,7 @@
 package br.com.joaoretamero.olhaosol.main;
 
+import static com.google.android.gms.location.LocationServices.FusedLocationApi;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.IntentSender;
@@ -17,19 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-
-import java.util.List;
-
 import br.com.joaoretamero.olhaosol.R;
 import br.com.joaoretamero.olhaosol.http.ProvedorHttp;
 import br.com.joaoretamero.olhaosol.lista.ListaFragment;
+import br.com.joaoretamero.olhaosol.localizacao.ServicoLocalizacao;
 import br.com.joaoretamero.olhaosol.mapa.MapaFragment;
 import br.com.joaoretamero.olhaosol.mapa.NovaPosicaoListener;
 import br.com.joaoretamero.olhaosol.modelos.PrevisaoClimatica;
@@ -38,12 +31,16 @@ import br.com.joaoretamero.olhaosol.util.temperatura.ConversorTemperatura;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.google.android.gms.location.LocationServices.FusedLocationApi;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView,
-        ExibicaoListener, NovaPosicaoListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    ExibicaoListener, NovaPosicaoListener, GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int REQUEST_ERRO_PLAY_SERVICES = 1;
     private static final int REQUEST_PERMISSAO_LOCALIZACAO = 2;
@@ -68,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements MainView,
     private ProgressDialog progressDialogPrevisoes;
     private ProgressDialog progressDialogLocalizacao;
     private GoogleApiClient googleApiClient;
+    private FusedLocationProviderClient fusedLocationClient;
+    private ServicoLocalizacao servicoLocalizacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,11 @@ public class MainActivity extends AppCompatActivity implements MainView,
         configuraToolbar();
         configurarGoogleApiClient();
 
-        presenter = new MainPresenter(this, new ProvedorSchedulerPadrao(), ProvedorHttp.getServicoHttp());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        servicoLocalizacao = new ServicoLocalizacao(fusedLocationClient);
+
+        presenter = new MainPresenter(this, new ProvedorSchedulerPadrao(),
+            ProvedorHttp.getServicoHttp());
     }
 
     private void configuraToolbar() {
@@ -92,10 +95,10 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     private void configurarGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API)
+            .build();
     }
 
     @Override
@@ -123,28 +126,31 @@ public class MainActivity extends AppCompatActivity implements MainView,
     protected void onStop() {
         super.onStop();
 
-        if (googleApiClient.isConnected())
+        if (googleApiClient.isConnected()) {
             googleApiClient.disconnect();
+        }
     }
 
     private void atualizaMenuTemperatura(Menu menu) {
         UnidadeTemperatura unidadeTemperatura = presenter.getUnidadeTemperatura();
         MenuItem menuTemperatura = menu.findItem(R.id.menu_temperatura);
 
-        if (unidadeTemperatura == UnidadeTemperatura.CELSIUS)
+        if (unidadeTemperatura == UnidadeTemperatura.CELSIUS) {
             menuTemperatura.setTitle(stringFahrenheit);
-        else
+        } else {
             menuTemperatura.setTitle(stringCelcius);
+        }
     }
 
     private void atualizaMenuExibicao(Menu menu) {
         ModoExibicao modoExibicao = presenter.getModoExibicao();
         MenuItem menuExibicao = menu.findItem(R.id.menu_exibicao);
 
-        if (modoExibicao == ModoExibicao.LISTA)
+        if (modoExibicao == ModoExibicao.LISTA) {
             menuExibicao.setIcon(R.drawable.ic_mapa);
-        else
+        } else {
             menuExibicao.setIcon(R.drawable.ic_lista);
+        }
     }
 
     @Override
@@ -174,9 +180,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     private void exibirFragment(Fragment fragment) {
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.conteudo, fragment)
-                .commit();
+            .beginTransaction()
+            .replace(R.id.conteudo, fragment)
+            .commit();
     }
 
     @Override
@@ -195,8 +201,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
             }
             progressDialogPrevisoes.show();
         } else {
-            if (progressDialogPrevisoes != null)
+            if (progressDialogPrevisoes != null) {
                 progressDialogPrevisoes.dismiss();
+            }
         }
     }
 
@@ -205,19 +212,22 @@ public class MainActivity extends AppCompatActivity implements MainView,
     }
 
     @Override
-    public void exibePrevisoes(List<PrevisaoClimatica> previsoes, ConversorTemperatura conversorTemperatura) {
+    public void exibePrevisoes(List<PrevisaoClimatica> previsoes,
+        ConversorTemperatura conversorTemperatura) {
         PrevisoesView fragment = getFragment();
 
-        if (fragment != null)
+        if (fragment != null) {
             fragment.exibePrevisoes(previsoes, conversorTemperatura);
+        }
     }
 
     @Override
     public void setConversorTemperatura(ConversorTemperatura conversorTemperatura) {
         PrevisoesView fragment = getFragment();
 
-        if (fragment != null)
+        if (fragment != null) {
             fragment.setConversorTemperatura(conversorTemperatura);
+        }
     }
 
     @Override
@@ -237,12 +247,14 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @SuppressWarnings("MissingPermission")
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+        @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSAO_LOCALIZACAO) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 presenter.permissaoLocalizacaoConcedida();
-            else
+            } else {
                 presenter.permissaoLocalizacaoNegada();
+            }
         }
     }
 
@@ -254,50 +266,58 @@ public class MainActivity extends AppCompatActivity implements MainView,
     @Override
     @SuppressWarnings("MissingPermission")
     public void onConnected(@Nullable Bundle bundle) {
-        if (isPermissaoLocalizacaoConcedida(permissaoLocalizacao))
+        if (isPermissaoLocalizacaoConcedida(permissaoLocalizacao)) {
             presenter.permissaoLocalizacaoConcedida();
-        else if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissaoLocalizacao)) {
+        } else if (ActivityCompat
+            .shouldShowRequestPermissionRationale(this, permissaoLocalizacao)) {
             presenter.deveExplicarPermissaoLocalizacao();
-        } else
+        } else {
             presenter.semPermissaoLocalizacao();
+        }
     }
 
     private boolean isPermissaoLocalizacaoConcedida(String permissao) {
         return ActivityCompat.checkSelfPermission(this, permissao)
-                == PackageManager.PERMISSION_GRANTED;
+            == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     public void explicarMotivoPermissao() {
         new AlertDialog.Builder(this)
-                .setMessage(R.string.explicacao_localizacao)
-                .setPositiveButton(R.string.permitir, (dialog, which) -> {
-                    dialog.dismiss();
-                    presenter.semPermissaoLocalizacao();
-                })
-                .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
-                    dialog.cancel();
-                    finish();
-                })
-                .show();
+            .setMessage(R.string.explicacao_localizacao)
+            .setPositiveButton(R.string.permitir, (dialog, which) -> {
+                dialog.dismiss();
+                presenter.semPermissaoLocalizacao();
+            })
+            .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
+                dialog.cancel();
+                finish();
+            })
+            .show();
     }
 
     @SuppressWarnings("MissingPermission")
     @Override
     public void requisitarLocalizacao() {
-        LocationAvailability locationAvailability = LocationServices.FusedLocationApi
-                .getLocationAvailability(googleApiClient);
+        servicoLocalizacao.getDisponibilidadeLocalizacao()
+            .switchMap(disponivel -> {
+                if (disponivel) {
+                    return servicoLocalizacao.getLocalizacao();
+                } else {
+                    return null;
+                }
+            })
+            .onErrorReturn(erro -> null)
+            .subscribe(localizacao -> {
+                if (localizacao == null) {
+                    presenter.semLocalizacao();
+                } else {
+                    float latitude = (float) localizacao.getLatitude();
+                    float longitude = (float) localizacao.getLongitude();
 
-        if (locationAvailability.isLocationAvailable()) {
-            LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setInterval(1000);
-            locationRequest.setFastestInterval(5000);
-            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        } else {
-            presenter.semLocalizacao();
-        }
+                    presenter.localizacaoObtida(latitude, longitude);
+                }
+            });
     }
 
     @Override
@@ -311,8 +331,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
             }
             progressDialogLocalizacao.show();
         } else {
-            if (progressDialogLocalizacao != null)
+            if (progressDialogLocalizacao != null) {
                 progressDialogLocalizacao.dismiss();
+            }
         }
     }
 
@@ -323,7 +344,8 @@ public class MainActivity extends AppCompatActivity implements MainView,
         if (location == null) {
             presenter.semLocalizacao();
         } else {
-            presenter.localizacaoObtida((float) location.getLatitude(), (float) location.getLongitude());
+            presenter
+                .localizacaoObtida((float) location.getLatitude(), (float) location.getLongitude());
         }
     }
 
@@ -334,12 +356,12 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     private void exibeMensagem(@StringRes int idMensagem) {
         new AlertDialog.Builder(this)
-                .setMessage(idMensagem)
-                .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
-                    dialog.cancel();
-                    finish();
-                })
-                .show();
+            .setMessage(idMensagem)
+            .setNegativeButton(R.string.fechar_app, (dialog, which) -> {
+                dialog.cancel();
+                finish();
+            })
+            .show();
     }
 
     @Override
