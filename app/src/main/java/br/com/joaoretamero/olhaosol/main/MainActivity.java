@@ -37,6 +37,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import java.util.List;
+import rx.Observable;
 
 public class MainActivity extends AppCompatActivity implements MainView,
     ExibicaoListener, NovaPosicaoListener, GoogleApiClient.ConnectionCallbacks,
@@ -304,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
                 if (disponivel) {
                     return servicoLocalizacao.getLocalizacao();
                 } else {
-                    return null;
+                    return Observable.just(null);
                 }
             })
             .onErrorReturn(erro -> null)
